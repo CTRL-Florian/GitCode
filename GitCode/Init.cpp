@@ -1,7 +1,5 @@
 #include "Init.h"
 
-#include <filesystem>
-
 bool init()
 {
 	try {
@@ -10,14 +8,14 @@ bool init()
 		std::filesystem::create_directory(".gitCode/refs");
 
 		std::ofstream headFile(".gitCode/HEAD");
-		if (headFile.is_open()) {
-			headFile << "ref: refs/heads/main\n";
-			headFile.close();
-		}
-		else {
+
+		if (!headFile.is_open()) {
 			std::cerr << "Failed to create .gitCode/HEAD file.\n";
-			return EXIT_FAILURE;
+			return false;
 		}
+
+		headFile << "ref: refs/heads/main\n";
+		headFile.close();
 
 		std::cout << "Initialized gitCode directory.";
 		return true;

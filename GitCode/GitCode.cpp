@@ -8,23 +8,18 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc < 2) { std::cerr << "Not enough arguments..."; return -1; }
+    std::cout << std::unitbuf;
+    std::cerr << std::unitbuf;
 
-    std::vector<std::string> arguments;
-
-    for (int i = 0; i < argc; i++) {
-        arguments.push_back(argv[i]);
-        toLower(arguments[i]);
-    }
+    if (argc < 2) { std::cerr << "Not enough arguments..."; return EXIT_FAILURE; }
     
-    std::string command = arguments[1];
+    std::string command = argv[1];
 
     if (command == "init") {
-        init();
+        return init() ? EXIT_SUCCESS : EXIT_FAILURE;
     } else if (command == "cat-file") {
-        // #TODO: Check if .gitCode folder exists.
-        catFile(arguments);
+        return catFile(argc, argv) ? EXIT_SUCCESS : EXIT_FAILURE;
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
