@@ -128,16 +128,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Author.cpp" />
+    <ClCompile Include="CatFile.cpp" />
     <ClCompile Include="Commit.cpp" />
     <ClCompile Include="GitCode.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Tree.cpp" />
+    <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Author.h" />
+    <ClInclude Include="CatFile.h" />
     <ClInclude Include="Commit.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Tree.h" />
+    <ClInclude Include="Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
