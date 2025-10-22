@@ -5,7 +5,9 @@
 class Tree
 {
 public:
-	Tree();
+	Tree(int mode, std::string type, std::string hash, std::string name) :
+		mMode{ mode }, mType{ type }, mHash{ hash }, mName{ name }
+	{ }
 
 	// #TODO: which setters / gettets are necesairy?
 	int getMode() const { return mMode; }
