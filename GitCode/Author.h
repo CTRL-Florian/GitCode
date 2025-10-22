@@ -10,9 +10,9 @@ public:
 	{ }
 
 	// #TODO: Which setters / getters are needed?
-	std::string getName() { return mName; }
-	std::string getEmail() { return mEmail; }
-	long getTimestamp() { return mTimestamp; }
+	std::string getName() const { return mName; }
+	std::string getEmail() const { return mEmail; }
+	long getTimestamp() const { return mTimestamp; }
 
 	void setName(std::string name) { mName = name; }
 	void setEmail(std::string email) { mEmail = email; }
