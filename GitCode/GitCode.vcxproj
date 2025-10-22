@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,6 +119,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,6 +133,7 @@
     <ClCompile Include="CatFile.cpp" />
     <ClCompile Include="Commit.cpp" />
     <ClCompile Include="GitCode.cpp" />
+    <ClCompile Include="Init.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="Util.cpp" />
@@ -139,6 +142,7 @@
     <ClInclude Include="Author.h" />
     <ClInclude Include="CatFile.h" />
     <ClInclude Include="Commit.h" />
+    <ClInclude Include="Init.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="Util.h" />

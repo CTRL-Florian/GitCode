@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "util.h"
+#include "init.h"
 #include "CatFile.h"
 
 #include <string>
@@ -8,7 +9,7 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc < 2) std::cerr << "Not enough arguments...";
+    if (argc < 2) std::cerr << "Not enough arguments..."; return -1;
 
     std::vector<std::string> arguments;
 
@@ -20,8 +21,9 @@ int main(int argc, char *argv[])
     std::string command = arguments[1];
 
     if (command == "init") {
-        return -1;
+        init();
     } else if (command == "cat-file") {
+        // #TODO: Check if .gitCode folder exists.
         catFile(arguments);
     }
 
