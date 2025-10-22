@@ -1,15 +1,14 @@
-#include <iostream>
-
 #include "util.h"
 #include "init.h"
 #include "CatFile.h"
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 int main(int argc, char *argv[])
 {
-    if (argc < 2) std::cerr << "Not enough arguments..."; return -1;
+    if (argc < 2) { std::cerr << "Not enough arguments..."; return -1; }
 
     std::vector<std::string> arguments;
 
