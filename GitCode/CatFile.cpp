@@ -44,31 +44,49 @@ bool catFile(int argc, char* argv[])
 
 	std::cout << "Current: " << std::filesystem::current_path() << std::endl;
 
-	std::string filename = "./git/objects/" + firstTwoOfHash(hash) + "/" + otherOfHash(hash);
+	std::filesystem::path filename = std::filesystem::path(".git/objects") / firstTwoOfHash(hash) / otherOfHash(hash);
 	std::ifstream file(filename, std::ios::binary);
 
 	if (!file.is_open()) {
-		std::cerr << "Couldn't open file.";
+		std::cerr << "Couldn't open file.\n";
 		return false;
 	}
 
 	std::vector<char> compressed((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-	std::vector<char> decompressed(1024 * 1024); // 1MB buffer
+	file.close();
+
 	z_stream zs = {};
-	inflateInit(&zs);
+	if (inflateInit(&zs) != Z_OK) {
+		std::cerr << "zlib not initialized.\n";
+		return false;
+	}
+
 	zs.next_in = reinterpret_cast<Bytef*>(compressed.data());
 	zs.avail_in = compressed.size();
-	zs.next_out = reinterpret_cast<Bytef*>(decompressed.data());
-	zs.avail_out = decompressed.size();
-	int ret = inflate(&zs, Z_FINISH);
-	if (ret != Z_STREAM_END) {
-		std::cerr << "Decompressie mislukt\n";
-	}
-	inflateEnd(&zs);
-	decompressed.resize(zs.total_out);
 
-	file.close();
+	std::vector<char> decompressed;
+	char outBuffer[4096]; // 4kb;
+	
+	int ret;
+	do {
+		zs.next_out = reinterpret_cast<Bytef*>(outBuffer);
+		zs.avail_out = sizeof(outBuffer);
+
+		ret = inflate(&zs, 0);
+
+		if (ret != Z_OK && ret != Z_STREAM_END) {
+			std::cerr << "Decompression failed (zlib error: " << ret << ")\n";
+			inflateEnd(&zs);
+			return false;
+		}
+
+		size_t bytesProduced = sizeof(outBuffer) - zs.avail_out;
+		decompressed.insert(decompressed.end(), outBuffer, outBuffer + bytesProduced);
+
+	} while (ret != Z_STREAM_END);
+
+	inflateEnd(&zs);
 
 	std::string objectString(decompressed.begin(), decompressed.end());
 	int pos = objectString.find('\0');
