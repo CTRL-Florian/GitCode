@@ -2,10 +2,15 @@
 
 #include <filesystem>
 
+/*
+	Information about the decompression:
+		https://chatgpt.com/c/68f9eb48-3238-8328-aabb-118881d7cd2f
+*/
+
 bool catFile(int argc, char* argv[])
 {
-	if (argc < 3) {
-		std::cerr << "Invalid arguments, required: '<blob-sha>'\nOptional: '-t', '-p'\n";
+	if (argc < 4 || argc > 4) {
+		std::cerr << "Usage: cat-file (-t | -p) <hash>\n";
 		return false;
 	}
 
@@ -30,6 +35,11 @@ bool catFile(int argc, char* argv[])
 		}
 	}
 
+	if (hash.empty()) {
+		std::cerr << "Usage: cat-file (-t | -p) <hash>\n";
+		return false;
+	}
+
 	std::cout << firstTwoOfHash(hash) + "/" + otherOfHash(hash) << std::endl;
 
 	std::cout << "Current: " << std::filesystem::current_path() << std::endl;
@@ -42,12 +52,28 @@ bool catFile(int argc, char* argv[])
 		return false;
 	}
 
-	std::string objectString{ std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() };
+	std::vector<char> compressed((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+	std::vector<char> decompressed(1024 * 1024); // 1MB buffer
+	z_stream zs = {};
+	inflateInit(&zs);
+	zs.next_in = reinterpret_cast<Bytef*>(compressed.data());
+	zs.avail_in = compressed.size();
+	zs.next_out = reinterpret_cast<Bytef*>(decompressed.data());
+	zs.avail_out = decompressed.size();
+	int ret = inflate(&zs, Z_FINISH);
+	if (ret != Z_STREAM_END) {
+		std::cerr << "Decompressie mislukt\n";
+	}
+	inflateEnd(&zs);
+	decompressed.resize(zs.total_out);
 
 	file.close();
 
+	std::string objectString(decompressed.begin(), decompressed.end());
+	int pos = objectString.find('\0');
+
 	std::string objectContent;
-	size_t pos = objectString.find('\0');
 
 	if (catType) {
 		objectContent += objectString.substr(0, pos);
@@ -57,7 +83,7 @@ bool catFile(int argc, char* argv[])
 		objectContent += objectString.substr(pos + 1);
 	}
 
-	std::cout << objectContent;
+	std::cout << objectContent << std::endl;
 
 	return true;
 }
