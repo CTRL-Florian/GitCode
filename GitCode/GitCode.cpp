@@ -20,6 +20,9 @@ int main(int argc, char *argv[])
     } else if (command == "cat-file") {
         return catFile(argc, argv) ? EXIT_SUCCESS : EXIT_FAILURE;
     }
+    else if (command == "hash-object") {
+        return hashObject(argc, argv) ? EXIT_SUCCESS : EXIT_FAILURE;
+    }
 
-    return EXIT_SUCCESS;
+    return EXIT_FAILURE;
 }
