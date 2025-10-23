@@ -10,12 +10,14 @@
 bool catFile(int argc, char* argv[])
 {
 	if (argc < 4 || argc > 4) {
-		std::cerr << "Usage: cat-file (-t | -p) <hash>\n";
+		std::cerr << "Usage: cat-file (-t | -p | -s | -e) <hash>\n";
 		return false;
 	}
 
 	bool catType = false;
+	bool catSize = false;
 	bool catPrint = false;
+	bool catExist = false;
 	std::string hash;
 
 	for (int i = 2; i < argc; i++) {
@@ -24,8 +26,14 @@ bool catFile(int argc, char* argv[])
 		if (arg == "-t") {
 			catType = true;
 		}
+		else if (arg == "-s") {
+			catSize = true;
+		}
 		else if (arg == "-p") {
 			catPrint = true;
+		}
+		else if (arg == "-e") {
+			catExist = true;
 		}
 		else if (arg[0] != '-') {
 			hash = arg;
@@ -40,16 +48,20 @@ bool catFile(int argc, char* argv[])
 		return false;
 	}
 
-	std::cout << firstTwoOfHash(hash) + "/" + otherOfHash(hash) << std::endl;
-
-	std::cout << "Current: " << std::filesystem::current_path() << std::endl;
-
 	std::filesystem::path filename = std::filesystem::path(".git/objects") / firstTwoOfHash(hash) / otherOfHash(hash);
 	std::ifstream file(filename, std::ios::binary);
 
 	if (!file.is_open()) {
-		std::cerr << "Couldn't open file.\n";
+		if (catExist) {
+			std::cerr << "Not a valid object name: " << hash << "\n";
+		}
+		else {
+			std::cerr << "Couldn't open file.\n";
+		}
 		return false;
+	}
+	else if (catExist) {
+		return true;
 	}
 
 	std::vector<char> compressed((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
@@ -89,16 +101,21 @@ bool catFile(int argc, char* argv[])
 	inflateEnd(&zs);
 
 	std::string objectString(decompressed.begin(), decompressed.end());
-	int pos = objectString.find('\0');
+	int posSpace = objectString.find(' ');
+	int posNull = objectString.find('\0');
 
 	std::string objectContent;
 
 	if (catType) {
-		objectContent += objectString.substr(0, pos);
+		objectContent += objectString.substr(0, posSpace);
+	}
+
+	if (catSize) {
+		objectContent += objectString.substr(posSpace + 1, posNull - (posSpace + 1));
 	}
 
 	if (catPrint) {
-		objectContent += objectString.substr(pos + 1);
+		objectContent += objectString.substr(posNull + 1);
 	}
 
 	std::cout << objectContent << std::endl;
