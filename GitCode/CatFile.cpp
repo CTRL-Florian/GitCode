@@ -71,7 +71,7 @@ bool catFile(int argc, char* argv[])
 
 	std::string decompressed;
 	if (!decompress(compressed, decompressed)) {
-		std::cerr << "zlib compression failed";
+		std::cerr << "zlib decompression failed";
 		return false;
 	}
 

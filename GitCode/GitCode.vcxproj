@@ -135,6 +135,7 @@
     <ClCompile Include="GitCode.cpp" />
     <ClCompile Include="HashObject.cpp" />
     <ClCompile Include="Init.cpp" />
+    <ClCompile Include="LsTree.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="Util.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Commit.h" />
     <ClInclude Include="HashObject.h" />
     <ClInclude Include="Init.h" />
+    <ClInclude Include="LsTree.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="Util.h" />

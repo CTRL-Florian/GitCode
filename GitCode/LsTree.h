@@ -8,10 +8,8 @@
 #include <filesystem>
 #include <iostream>
 
-#include <openssl/sha.h>
-
-class HashObject
+class LsTree
 {
 };
 
-bool hashObject(int argc, char* argv[]);
+bool lsTree(int argc, char* argv[]);

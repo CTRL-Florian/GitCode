@@ -9,8 +9,14 @@
 <h2>Commands:</h2>
 <pre>
 - gitCode init
-- gitCode cat-file (-t | -s | -p | -e) \<hash\>
-- gitCode hash-object (-w | ) \<filename\>
+- gitCode cat-file (-t | -s | -p | -e) &lt;hash&gt;
+- gitCode hash-object (-w | ) &lt;filename&gt;
+</pre>
+
+<h2>Requirements</h2>
+<pre>
+- zlib
+- OpenSSL
 </pre>
 
 <h2>Install guide:</h2>
