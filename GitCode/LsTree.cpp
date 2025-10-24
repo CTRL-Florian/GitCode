@@ -50,5 +50,9 @@ bool lsTree(int argc, char* argv[])
 
 	std::cout << decompressed << std::endl;
 
+	int posNull = decompressed.find('\0');
+	std::string header(decompressed.data(), posNull);
+	std::string content(decompressed.data() + posNull + 1, decompressed.size() - (posNull + 1));
+
 	return true;
 }

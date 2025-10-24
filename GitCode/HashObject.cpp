@@ -44,13 +44,14 @@ bool hashObject(int argc, char* argv[])
 	unsigned char digest[SHA_DIGEST_LENGTH];
 	SHA1(reinterpret_cast<const unsigned char*>(completeObject.c_str()), completeObject.size(), digest);
 
-	char hash[SHA_DIGEST_LENGTH * 2 + 1];
-	const char hex[] = "0123456789abcdef";
-	for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
-		hash[i * 2] = hex[(digest[i] >> 4) & 0xF];
-		hash[i * 2 + 1] = hex[digest[i] & 0xF];  
+	std::stringstream ss;
+	ss << std::hex << std::setfill('0');
+
+	for (unsigned char c : digest) {
+		ss << std::setw(2) << static_cast<int>(c);
 	}
-	hash[SHA_DIGEST_LENGTH * 2] = '\0';
+
+	std::string hash = ss.str();
 
 	std::cout << hash << std::endl;
 

@@ -1,4 +1,4 @@
-#include "Util.h"
+#include "Hash.h"
 
 void toLower(std::string& s)
 {

@@ -49,7 +49,7 @@ bool catFile(int argc, char* argv[])
 		return false;
 	}
 
-	std::filesystem::path filename = std::filesystem::path(".gitCode/objects") / firstTwoOfHash(hash) / otherOfHash(hash);
+	std::filesystem::path filename = std::filesystem::path(".git/objects") / firstTwoOfHash(hash) / otherOfHash(hash);
 	std::ifstream file(filename, std::ios::binary);
 
 	if (!file.is_open()) {
@@ -77,8 +77,6 @@ bool catFile(int argc, char* argv[])
 
 	int posSpace = decompressed.find(' ');
 	int posNull = decompressed.find('\0');
-
-	std::string objectContent;
 
 	if (catType) {
 		std::cout.write(decompressed.data(), posSpace);

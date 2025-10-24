@@ -1,4 +1,4 @@
-#include "util.h"
+#include "hash.h"
 #include "Init.h"
 #include "CatFile.h"
 #include "HashObject.h"
