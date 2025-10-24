@@ -138,6 +138,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="Util.cpp" />
+    <ClCompile Include="zlibFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Author.h" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="zlibFunctions.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="libraries.txt" />

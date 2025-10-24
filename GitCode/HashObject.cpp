@@ -44,7 +44,6 @@ bool hashObject(int argc, char* argv[])
 	unsigned char digest[SHA_DIGEST_LENGTH];
 	SHA1(reinterpret_cast<const unsigned char*>(completeObject.c_str()), completeObject.size(), digest);
 
-	// ChatGPT: instead of sprintf().
 	char hash[SHA_DIGEST_LENGTH * 2 + 1];
 	const char hex[] = "0123456789abcdef";
 	for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
@@ -59,37 +58,11 @@ bool hashObject(int argc, char* argv[])
 		return true;
 	}
 
-	z_stream zs{};
-	if (deflateInit(&zs, Z_DEFAULT_COMPRESSION) != Z_OK) {
-		std::cerr << "zlib not initialized.\n";
+	std::string compressed;
+	if (!compress(completeObject, compressed)) {
+		std::cerr << "zlib compression failed";
 		return false;
 	}
-
-	zs.next_in = reinterpret_cast<Bytef*>(completeObject.data());
-	zs.avail_in = completeObject.size();
-
-	std::string compressed;
-	char outBuffer[4096];
-
-	int ret;
-	do {
-		zs.next_out = reinterpret_cast<Bytef*>(outBuffer);
-		zs.avail_out = sizeof(outBuffer);
-
-		ret = deflate(&zs, Z_FINISH);
-
-		if (ret != Z_OK && ret != Z_STREAM_END) {
-			std::cerr << "Compression failed (zlib error: " << ret << ")\n";
-			deflateEnd(&zs);
-			return false;
-		}
-
-		size_t bytesProduced = sizeof(outBuffer) - zs.avail_out;
-		compressed.insert(compressed.end(), outBuffer, outBuffer + bytesProduced);
-
-	} while (ret != Z_STREAM_END);
-
-	deflateEnd(&zs);
 
 	std::string hashString = hash;
 	std::string filepath = ".gitCode/objects/" + firstTwoOfHash(hashString);
