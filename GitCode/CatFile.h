@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Util.h"
+#include "zlibFunctions.h"
 
 #include <string>
 #include <vector>

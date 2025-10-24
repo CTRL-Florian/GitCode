@@ -65,60 +65,33 @@ bool catFile(int argc, char* argv[])
 		return true;
 	}
 
-	std::vector<char> compressed((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+	std::string compressed((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
 	file.close();
 
-	z_stream zs = {};
-	if (inflateInit(&zs) != Z_OK) {
-		std::cerr << "zlib not initialized.\n";
+	std::string decompressed;
+	if (!decompress(compressed, decompressed)) {
+		std::cerr << "zlib compression failed";
 		return false;
 	}
 
-	zs.next_in = reinterpret_cast<Bytef*>(compressed.data());
-	zs.avail_in = compressed.size();
-
-	std::vector<char> decompressed;
-	char outBuffer[4096]; // 4kb;
-	
-	int ret;
-	do {
-		zs.next_out = reinterpret_cast<Bytef*>(outBuffer);
-		zs.avail_out = sizeof(outBuffer);
-
-		ret = inflate(&zs, 0);
-
-		if (ret != Z_OK && ret != Z_STREAM_END) {
-			std::cerr << "Decompression failed (zlib error: " << ret << ")\n";
-			inflateEnd(&zs);
-			return false;
-		}
-
-		size_t bytesProduced = sizeof(outBuffer) - zs.avail_out;
-		decompressed.insert(decompressed.end(), outBuffer, outBuffer + bytesProduced);
-
-	} while (ret != Z_STREAM_END);
-
-	inflateEnd(&zs);
-
-	std::string objectString(decompressed.begin(), decompressed.end());
-	int posSpace = objectString.find(' ');
-	int posNull = objectString.find('\0');
+	int posSpace = decompressed.find(' ');
+	int posNull = decompressed.find('\0');
 
 	std::string objectContent;
 
 	if (catType) {
-		std::cout.write(objectString.data(), posSpace);
+		std::cout.write(decompressed.data(), posSpace);
 		std::cout << std::flush;
 	}
 
 	if (catSize) {
-		std::cout.write(objectString.data() + posSpace + 1, posNull - (posSpace + 1));
+		std::cout.write(decompressed.data() + posSpace + 1, posNull - (posSpace + 1));
 		std::cout << std::flush;
 	}
 
 	if (catPrint) {
-		std::cout.write(objectString.data() + posNull + 1, objectString.size() - (posNull + 1));
+		std::cout.write(decompressed.data() + posNull + 1, decompressed.size() - (posNull + 1));
 		std::cout << std::flush;
 	}
 

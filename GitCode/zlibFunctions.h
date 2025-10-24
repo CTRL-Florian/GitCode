@@ -10,3 +10,4 @@ class zlibFunctions
 };
 
 bool compress(std::string& in, std::string& out);
+bool decompress(std::string& in, std::string& out);
