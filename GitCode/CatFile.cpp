@@ -9,7 +9,7 @@
 
 bool catFile(int argc, char* argv[])
 {
-	if (argc < 4 || argc > 4) {
+	if (argc != 4) {
 		std::cerr << "Usage: cat-file (-t | -p | -s | -e) <hash>\n";
 		return false;
 	}
@@ -40,11 +40,12 @@ bool catFile(int argc, char* argv[])
 		}
 		else {
 			std::cerr << "Invalid option: " << arg << "\n";
+			return false;
 		}
 	}
 
 	if (hash.empty()) {
-		std::cerr << "Usage: cat-file (-t | -p) <hash>\n";
+		std::cerr << "Usage: cat-file (-t | -p | -s | -e) <hash>\n";
 		return false;
 	}
 

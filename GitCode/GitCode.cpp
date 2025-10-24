@@ -1,6 +1,7 @@
 #include "util.h"
-#include "init.h"
+#include "Init.h"
 #include "CatFile.h"
+#include "HashObject.h"
 
 #include <string>
 #include <vector>

@@ -1,0 +1,2 @@
+zlib (vcpkg)
+openssl (vcpkg)
