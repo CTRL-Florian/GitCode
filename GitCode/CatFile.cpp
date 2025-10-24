@@ -49,7 +49,7 @@ bool catFile(int argc, char* argv[])
 		return false;
 	}
 
-	std::filesystem::path filename = std::filesystem::path(".git/objects") / firstTwoOfHash(hash) / otherOfHash(hash);
+	std::filesystem::path filename = std::filesystem::path(".gitCode/objects") / firstTwoOfHash(hash) / otherOfHash(hash);
 	std::ifstream file(filename, std::ios::binary);
 
 	if (!file.is_open()) {
@@ -108,18 +108,23 @@ bool catFile(int argc, char* argv[])
 	std::string objectContent;
 
 	if (catType) {
-		objectContent += objectString.substr(0, posSpace);
+		std::cout.write(objectString.data(), posSpace);
+		std::cout << std::flush;
 	}
 
 	if (catSize) {
-		objectContent += objectString.substr(posSpace + 1, posNull - (posSpace + 1));
+		std::cout.write(objectString.data() + posSpace + 1, posNull - (posSpace + 1));
+		std::cout << std::flush;
 	}
 
 	if (catPrint) {
-		objectContent += objectString.substr(posNull + 1);
+		std::cout.write(objectString.data() + posNull + 1, objectString.size() - (posNull + 1));
+		std::cout << std::flush;
 	}
 
-	std::cout << objectContent << std::endl;
+	if (catType || catSize || catPrint) {
+		std::cout << std::endl;
+	}
 
 	return true;
 }

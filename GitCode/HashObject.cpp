@@ -29,7 +29,7 @@ bool hashObject(int argc, char* argv[])
 		return false;
 	}
 
-	std::ifstream file(filename, std::ios::binary);
+	std::ifstream file(filename);
 
 	if (!file.is_open()) {
 		std::cerr << "Couldn't open file.\n";
@@ -58,6 +58,51 @@ bool hashObject(int argc, char* argv[])
 	if (!hashWrite) {
 		return true;
 	}
+
+	z_stream zs{};
+	if (deflateInit(&zs, Z_DEFAULT_COMPRESSION) != Z_OK) {
+		std::cerr << "zlib not initialized.\n";
+		return false;
+	}
+
+	zs.next_in = reinterpret_cast<Bytef*>(completeObject.data());
+	zs.avail_in = completeObject.size();
+
+	std::string compressed;
+	char outBuffer[4096];
+
+	int ret;
+	do {
+		zs.next_out = reinterpret_cast<Bytef*>(outBuffer);
+		zs.avail_out = sizeof(outBuffer);
+
+		ret = deflate(&zs, Z_FINISH);
+
+		if (ret != Z_OK && ret != Z_STREAM_END) {
+			std::cerr << "Compression failed (zlib error: " << ret << ")\n";
+			deflateEnd(&zs);
+			return false;
+		}
+
+		size_t bytesProduced = sizeof(outBuffer) - zs.avail_out;
+		compressed.insert(compressed.end(), outBuffer, outBuffer + bytesProduced);
+
+	} while (ret != Z_STREAM_END);
+
+	deflateEnd(&zs);
+
+	std::string hashString = hash;
+	std::string filepath = ".gitCode/objects/" + firstTwoOfHash(hashString);
+	std::filesystem::create_directories(filepath);
+	filepath += '/' + otherOfHash(hashString);
+
+	std::ofstream hashFile(filepath, std::ios::binary);
+	if (!hashFile.is_open()) {
+		std::cerr << "Couldn't open file.\n";
+		return false;
+	}
+
+	hashFile.write(compressed.data(), compressed.size());
 	
-	return false;
+	return true;
 }

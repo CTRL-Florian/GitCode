@@ -4,9 +4,11 @@
 
 #include <string>
 #include <fstream>
+#include <filesystem>
 #include <iostream>
 
 #include <openssl/sha.h>
+#include <zlib.h>
 
 class HashObject
 {
