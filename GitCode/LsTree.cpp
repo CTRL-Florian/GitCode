@@ -48,11 +48,42 @@ bool lsTree(int argc, char* argv[])
 		return false;
 	}
 
-	std::cout << decompressed << std::endl;
-
 	int posNull = decompressed.find('\0');
-	std::string header(decompressed.data(), posNull);
-	std::string content(decompressed.data() + posNull + 1, decompressed.size() - (posNull + 1));
+	std::string header = decompressed.substr(0, posNull);
+	std::string content = decompressed.substr(posNull + 1);
+
+	size_t pos = 0;
+	while (pos < content.size()) {
+		size_t spacePos = content.find(' ', pos);
+		if (spacePos == std::string::npos) break;
+
+		std::string mode = content.substr(pos, spacePos - pos);
+		
+		size_t nullPos = content.find('\0', pos);
+		if (nullPos == std::string::npos) break;
+
+		std::string name = content.substr(spacePos + 1, nullPos - (spacePos + 1));
+
+		if (nullPos + 20 > content.size()) break;
+		std::string binHash = content.substr(nullPos + 1, 20);
+
+		std::stringstream ss;
+		ss << std::hex << std::setfill('0');
+		for (unsigned char c : binHash) {
+			ss << std::setw(2) << static_cast<int>(c);
+		}
+		std::string hashHex = ss.str();
+
+		if (!lsName) {
+			std::cout << mode;
+			if (mode == "40000") std::cout << " tree ";
+			else std::cout << " blob ";
+			std::cout << hashHex << '\t';
+		}
+		std::cout << filename << std::endl;
+
+		pos = nullPos + 21;
+	}
 
 	return true;
 }
