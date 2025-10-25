@@ -3,7 +3,7 @@
 bool lsTree(int argc, char* argv[])
 {
 	if (argc < 3 || argc > 4) {
-		std::cerr << "Usage: hash-object ( -w |  ) <filename>\n";
+		std::cerr << "Usage: ls-tree (--name-only | ) <filename>\n";
 		return false;
 	}
 
@@ -80,7 +80,7 @@ bool lsTree(int argc, char* argv[])
 			else std::cout << " blob ";
 			std::cout << hashHex << '\t';
 		}
-		std::cout << filename << std::endl;
+		std::cout << name << std::endl;
 
 		pos = nullPos + 21;
 	}
