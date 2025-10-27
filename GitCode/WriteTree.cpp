@@ -42,16 +42,15 @@ bool writeTree(int argc, char* argv[])
 			mode = "120000";
 			name = objectP.filename().string();
 			std::filesystem::path symlinkContent = std::filesystem::read_symlink(objectP);
-			std::string objectContent = "blob " + symlinkContent.string().size() + '\0' + symlinkContent.string();
-			hash = getSha1Binary(objectContent);
+			std::string completeObject = "blob " + symlinkContent.string().size() + '\0' + symlinkContent.string();
+			hash = getSha1Binary(completeObject);
 
 			treeContent += mode + ' ' + name + '\0' + hash;
 
-			std::string completeObject = "blob " + std::to_string(objectContent.size()) + '\0' + objectContent;
 			std::string compressed;
 			compress(completeObject, compressed);
 
-			std::string hashHex = getSha1Hex(objectContent);
+			std::string hashHex = getSha1Hex(completeObject);
 
 			writeObjectFileBinary(hashHex, compressed);
 		}
@@ -66,15 +65,15 @@ bool writeTree(int argc, char* argv[])
 			name = objectP.filename().string();
 			std::string objectContent;
 			readFile(objectP, objectContent);
-			hash = getSha1Binary(objectContent);
+			std::string completeObject = "blob " + std::to_string(objectContent.size()) + '\0' + objectContent;
+			hash = getSha1Binary(completeObject);
 
 			treeContent += mode + ' ' + name + '\0' + hash;
 
-			std::string completeObject = "blob " + std::to_string(objectContent.size()) + '\0' + objectContent;
 			std::string compressed;
 			compress(completeObject, compressed);
 
-			std::string hashHex = getSha1Hex(objectContent);
+			std::string hashHex = getSha1Hex(completeObject);
 
 			writeObjectFileBinary(hashHex, compressed);
 		}

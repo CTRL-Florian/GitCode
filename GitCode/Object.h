@@ -1,21 +1,43 @@
 #pragma once
 
+#include "FileFunctions.h"
+
 #include <string>
+#include <sstream>
+#include <filesystem>
+
+#include <zlib.h>
+#include <openssl/sha.h>
 
 class Object
 {
 public:
-	Object(std::string content) :
-		mContent{content}
-	{ }
+	enum Type {blob, tree};
+	Object(Type type, std::filesystem::path path);
 
-	// #TODO: Which setters / getters are necesairy?
 	std::string getContent() const { return mContent; }
+	size_t getSize() const { return mSize; }
+	std::string getCompleteObject() const { return mCompleteObject; }
 
-	void setContent(std::string content) { mContent = content; }
+	bool binHash();
+	std::string getBinhash();
+
+	bool hexHash();
+	std::string getHexHash();
+
+	bool compress();
+	std::string getCompressed();
+
+	bool write();
 
 private:
+	Type mType;
 	std::string mContent;
+	size_t mSize;
+	std::string mCompleteObject;
 
+	std::string mBinHash;
+	std::string mHexHash;
+
+	std::string mCompressed;
 };
-

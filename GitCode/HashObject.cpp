@@ -8,7 +8,7 @@ bool hashObject(int argc, char* argv[])
 	}
 
 	bool hashWrite = false;
-	std::string filename;
+	std::filesystem::path path;
 
 	for (int i = 2; i < argc; i++) {
 		std::string arg = argv[i];
@@ -16,7 +16,7 @@ bool hashObject(int argc, char* argv[])
 			hashWrite = true;
 		}
 		else if (arg[0] != '-') {
-			filename = arg;
+			path = arg;
 		}
 		else {
 			std::cerr << "Invalid option: " << arg << "\n";
@@ -24,35 +24,19 @@ bool hashObject(int argc, char* argv[])
 		}
 	}
 
-	if (filename.empty()) {
+	if (path.empty()) {
 		std::cerr << "Usage: hash-object ( -w |  ) <filename>\n";
 		return false;
 	}
 
-	std::ifstream file(filename);
-
-	if (!file.is_open()) {
-		std::cerr << "Couldn't open file.\n";
-		return false;
+	if (std::filesystem::is_directory(path)) {
+		std::cerr << "Fatal: " << path.string() << ": Is a directory.\n";
 	}
 
-	std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-	std::string completeObject = "blob " + std::to_string(content.size()) + '\0' + content;
+	Object ob(Object::Type::blob, path );
+	std::cout << ob.getHexHash() << std::endl;
 
-	file.close();
+	if (hashWrite) ob.write();
 
-	std::string hash = getSha1Hex(completeObject);
-
-	std::cout << hash << std::endl;
-
-	if (!hashWrite) {
-		return true;
-	}
-
-	std::string compressed;
-	compress(completeObject, compressed);
-
-	writeObjectFileBinary(hash, compressed);
-	
 	return true;
 }
