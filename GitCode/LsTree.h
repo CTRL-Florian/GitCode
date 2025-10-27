@@ -1,11 +1,8 @@
 #pragma once
 
-#include "hash.h"
-#include "zlibFunctions.h"
+#include "File.h"
 
 #include <string>
-#include <fstream>
-#include <filesystem>
 #include <iostream>
 
 class LsTree

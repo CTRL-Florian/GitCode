@@ -30,27 +30,9 @@ bool lsTree(int argc, char* argv[])
 		return false;
 	}
 
-	std::filesystem::path filename = std::filesystem::path(".git/objects") / firstTwoOfHash(hash) / otherOfHash(hash);
-	std::ifstream file(filename, std::ios::binary);
+	File file(hash);
 
-	if (!file.is_open()) {
-		std::cerr << "Not a valid object name: " << hash << "\n";
-		return false;
-	}
-
-	std::string compressed((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-
-	file.close();
-
-	std::string decompressed;
-	if (!decompress(compressed, decompressed)) {
-		std::cerr << "zlib decompression failed";
-		return false;
-	}
-
-	int posNull = decompressed.find('\0');
-	std::string header = decompressed.substr(0, posNull);
-	std::string content = decompressed.substr(posNull + 1);
+	std::string content = file.getContent();
 
 	size_t pos = 0;
 	while (pos < content.size()) {

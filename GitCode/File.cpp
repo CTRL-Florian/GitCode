@@ -60,6 +60,8 @@ std::string File::getDecompressed()
 
 bool File::splitType()
 {
+	if (mDecompressed.empty()) decompress();
+	
 	int posSpace = mDecompressed.find(' ');
 
 	mType = std::string(mDecompressed.data(), posSpace);
@@ -73,6 +75,8 @@ std::string File::getType()
 
 bool File::splitSize()
 {
+	if (mDecompressed.empty()) decompress();
+
 	int posSpace = mDecompressed.find(' ');
 	int posNull = mDecompressed.find('\0');
 
@@ -91,6 +95,8 @@ int File::getSize()
 
 bool File::splitContent()
 {
+	if (mDecompressed.empty()) decompress();
+
 	int posNull = mDecompressed.find('\0');
 
 	mContent = std::string(mDecompressed.data() + posNull + 1, mDecompressed.size() - (posNull + 1));
