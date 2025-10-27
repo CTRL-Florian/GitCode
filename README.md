@@ -6,6 +6,10 @@
 </div>
 
 <br>
+<h2>Graph</h2>
+<embed src="GitCodeGraph.pdf" type="application/pdf" width="600" height="800">
+
+<br>
 <h2>Commands:</h2>
 <pre>
 - gitCode init
