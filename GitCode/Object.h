@@ -1,10 +1,10 @@
 #pragma once
 
-#include "FileFunctions.h"
-
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <filesystem>
+#include <iostream>
 
 #include <zlib.h>
 #include <openssl/sha.h>

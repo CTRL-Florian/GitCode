@@ -2,11 +2,6 @@
 
 #include <filesystem>
 
-/*
-	Information about the decompression:
-		https://chatgpt.com/c/68f9eb48-3238-8328-aabb-118881d7cd2f
-*/
-
 bool catFile(int argc, char* argv[])
 {
 	if (argc != 4) {

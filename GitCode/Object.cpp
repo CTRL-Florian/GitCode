@@ -1,9 +1,11 @@
 #include "Object.h"
 
+bool readObjectContent(std::filesystem::path& path, std::string& out);
+
 Object::Object(Object::Type type, std::filesystem::path path) :
 	mType{type}
 {
-	readFile(path, mContent);
+	readObjectContent(path, mContent);
 
 	mSize = mContent.size();
 	
@@ -100,5 +102,34 @@ std::string Object::getCompressed()
 
 bool Object::write()
 {
-	return writeObjectFileBinary(mHexHash, mCompressed);
+	std::string filepath = ".gitCode/objects/" + mHexHash.substr(0, 2);
+	std::filesystem::create_directories(filepath);
+	filepath += '/' + mHexHash.substr(2);
+
+	std::ofstream hashFile(filepath, std::ios::binary);
+	if (!hashFile.is_open()) {
+		std::cerr << "Couldn't open file.\n";
+		return false;
+	}
+
+	hashFile.write(mCompressed.data(), mCompressed.size());
+
+	return true;
+}
+
+bool readObjectContent(std::filesystem::path& path, std::string& out)
+{
+	std::ifstream file(path);
+
+	if (!file.is_open()) {
+		std::cerr << "Couldn't open file.\n";
+		return false;
+	}
+
+	std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+	file.close();
+
+	out = content;
+
+	return true;
 }
