@@ -14,7 +14,6 @@ class Object
 {
 public:
 	enum Type {blob, tree};
-	Object();
 
 	std::string getContent() const { return mContent; }
 	size_t getSize() const { return mSize; }

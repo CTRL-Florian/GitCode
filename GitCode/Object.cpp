@@ -7,6 +7,8 @@ Blob::Blob(std::filesystem::path path)
 {
 	mPath = path;
 
+	mType = Object::Type::blob;
+
 	readObjectContent(mPath, mContent);
 
 	mSize = mContent.size();
@@ -28,7 +30,34 @@ Blob::Blob(std::filesystem::path path)
 
 Tree::Tree(std::filesystem::path path, std::vector<std::unique_ptr<Object>> objects)
 {
+	mPath = path;
+	mObjects = objects;
 
+	mType = Object::Type::tree;
+
+	for (const std::unique_ptr<Object>& ob : objects) {
+		mContent += ob->getMode();
+		mContent += ' ';
+		mContent += ob->getName();
+		mContent += '\0';
+		mContent += ob->getBinhash();
+	}
+
+	mSize = mContent.size();
+
+	mCompleteObject += "blob";
+	mCompleteObject += ' ';
+	mCompleteObject += std::to_string(mSize);
+	mCompleteObject += '\0';
+	mCompleteObject += mContent;
+
+	mBinHash = "";
+	mHexHash = "";
+
+	mMode = "";
+	mName = "";
+
+	mCompressed = "";
 }
 
 bool Object::binHash()
