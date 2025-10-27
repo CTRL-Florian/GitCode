@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Object.h"
 #include "Hash.h"
 #include "zlibFunctions.h"
 #include "FileFunctions.h"

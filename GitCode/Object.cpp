@@ -1,15 +1,17 @@
 #include "Object.h"
 
 bool readObjectContent(std::filesystem::path& path, std::string& out);
+bool isExe(std::filesystem::path path);
 
-Object::Object(Object::Type type, std::filesystem::path path) :
-	mType{type}
+Blob::Blob(std::filesystem::path path)
 {
-	readObjectContent(path, mContent);
+	mPath = path;
+
+	readObjectContent(mPath, mContent);
 
 	mSize = mContent.size();
-	
-	type == Object::Type::blob ? mCompleteObject += "blob" : mCompleteObject += "tree";
+
+	mCompleteObject += "blob";
 	mCompleteObject += ' ';
 	mCompleteObject += std::to_string(mSize);
 	mCompleteObject += '\0';
@@ -18,7 +20,15 @@ Object::Object(Object::Type type, std::filesystem::path path) :
 	mBinHash = "";
 	mHexHash = "";
 
+	mMode = "";
+	mName = "";
+
 	mCompressed = "";
+}
+
+Tree::Tree(std::filesystem::path path, std::vector<std::unique_ptr<Object>> objects)
+{
+
 }
 
 bool Object::binHash()
@@ -102,6 +112,7 @@ std::string Object::getCompressed()
 
 bool Object::write()
 {
+	if (mHexHash.empty()) hexHash();
 	if (mCompressed.empty()) compress();
 
 	std::string filepath = ".gitCode/objects/" + mHexHash.substr(0, 2);
@@ -119,6 +130,44 @@ bool Object::write()
 	return true;
 }
 
+bool Blob::mode()
+{
+	if (std::filesystem::is_symlink(mPath)) {
+		mMode = "120000";
+	}
+	else if (isExe(mPath)) {
+		mMode = "100755";
+	}
+	else {
+		mMode = "100644";
+	}
+	return true;
+}
+
+bool Tree::mode()
+{
+	mMode = "40000";
+	return false;
+}
+
+std::string Object::getMode()
+{
+	if (mMode.empty()) mode();
+	return mMode;
+}
+
+bool Object::name()
+{
+	mName = mPath.filename().string();
+	return true;
+}
+
+std::string Object::getName()
+{
+	if (mName.empty()) name();
+	return mName;
+}
+
 bool readObjectContent(std::filesystem::path& path, std::string& out)
 {
 	std::ifstream file(path);
@@ -134,4 +183,12 @@ bool readObjectContent(std::filesystem::path& path, std::string& out)
 	out = content;
 
 	return true;
+}
+
+bool isExe(std::filesystem::path path)
+{
+	std::filesystem::perms perms = std::filesystem::status(path).permissions();
+	return (perms & std::filesystem::perms::owner_exec) != std::filesystem::perms::none ||
+		(perms & std::filesystem::perms::group_exec) != std::filesystem::perms::none ||
+		(perms & std::filesystem::perms::others_exec) != std::filesystem::perms::none;
 }

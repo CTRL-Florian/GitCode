@@ -33,10 +33,10 @@ bool hashObject(int argc, char* argv[])
 		std::cerr << "Fatal: " << path.string() << ": Is a directory.\n";
 	}
 
-	Object ob(Object::Type::blob, path );
-	std::cout << ob.getHexHash() << std::endl;
+	Blob blob(path);
+	std::cout << blob.getHexHash() << std::endl;
 
-	if (hashWrite) ob.write();
+	if (hashWrite) blob.write();
 
 	return true;
 }

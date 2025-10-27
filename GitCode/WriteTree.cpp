@@ -1,12 +1,7 @@
 #include "WriteTree.h"
 
-bool isExe(std::filesystem::path path)
-{
-	std::filesystem::perms perms = std::filesystem::status(path).permissions();
-	return (perms & std::filesystem::perms::owner_exec) != std::filesystem::perms::none ||
-		(perms & std::filesystem::perms::group_exec) != std::filesystem::perms::none ||
-		(perms & std::filesystem::perms::others_exec) != std::filesystem::perms::none;
-}
+Tree writeTreeHelper(std::filesystem::path& path);
+bool isExe(std::filesystem::path path);
 
 bool writeTree(int argc, char* argv[])
 {
@@ -15,21 +10,46 @@ bool writeTree(int argc, char* argv[])
 		return false;
 	}
 
-	std::vector<std::filesystem::path> objects;
-
 	std::filesystem::path path = std::filesystem::current_path();
-	for (const auto& object : std::filesystem::directory_iterator(path)) {
-		if (object.path().filename().string() == ".git") {
+	writeTreeHelper(path);
+
+	return true;
+}
+
+Tree writeTreeHelper(std::filesystem::path& path) 
+{
+	std::vector<std::filesystem::path> paths;
+
+	for (const std::filesystem::directory_entry entry : std::filesystem::directory_iterator(path)) {
+		if (entry.path().filename().string() == ".git") {
 			continue;
 		}
 
-		objects.push_back(object.path());
+		paths.push_back(entry.path());
 	}
+	std::sort(paths.begin(), paths.end());
+
+	std::vector<std::unique_ptr<Object>> objects;
+
+	for (std::filesystem::path path : paths) {
+		if (std::filesystem::is_directory(path)) {
+			
+		}
+		else {
+			std::unique_ptr<Blob> blob = std::make_unique<Blob>(path);
+			blob->binHash();
+			blob->write();
+			objects.push_back(std::move(blob));
+		}
+	}
+
+	return Tree(path, objects);
+
+	// 
 
 	std::string treeHeader = "tree ";
 	std::string treeContent;
 
-	std::sort(objects.begin(), objects.end());
 
 	for (std::filesystem::path objectP : objects) {
 		std::string mode;
@@ -88,4 +108,12 @@ bool writeTree(int argc, char* argv[])
 	std::cout << treehash << std::endl;
 
 	return true;
+}
+
+bool isExe(std::filesystem::path path)
+{
+	std::filesystem::perms perms = std::filesystem::status(path).permissions();
+	return (perms & std::filesystem::perms::owner_exec) != std::filesystem::perms::none ||
+		(perms & std::filesystem::perms::group_exec) != std::filesystem::perms::none ||
+		(perms & std::filesystem::perms::others_exec) != std::filesystem::perms::none;
 }
