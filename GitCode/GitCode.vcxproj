@@ -139,6 +139,7 @@
     <ClCompile Include="LsTree.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Tree.cpp" />
+    <ClCompile Include="WriteTree.cpp" />
     <ClCompile Include="zlibFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +152,7 @@
     <ClInclude Include="LsTree.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Tree.h" />
+    <ClInclude Include="WriteTree.h" />
     <ClInclude Include="zlibFunctions.h" />
   </ItemGroup>
   <ItemGroup>

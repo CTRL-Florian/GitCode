@@ -41,17 +41,7 @@ bool hashObject(int argc, char* argv[])
 
 	file.close();
 
-	unsigned char digest[SHA_DIGEST_LENGTH];
-	SHA1(reinterpret_cast<const unsigned char*>(completeObject.c_str()), completeObject.size(), digest);
-
-	std::stringstream ss;
-	ss << std::hex << std::setfill('0');
-
-	for (unsigned char c : digest) {
-		ss << std::setw(2) << static_cast<int>(c);
-	}
-
-	std::string hash = ss.str();
+	std::string hash = getHashOfObjectLong(completeObject);
 
 	std::cout << hash << std::endl;
 

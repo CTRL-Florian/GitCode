@@ -9,8 +9,10 @@
 <h2>Commands:</h2>
 <pre>
 - gitCode init
-- gitCode cat-file (-t | -s | -p | -e) &lt;hash&gt;
+- gitCode cat-file (-t | -s | -p | -e) &lt;object_sha1_hash&gt;
 - gitCode hash-object (-w | ) &lt;filename&gt;
+- gitCode ls-tree (--name-only | ) &lt;tree_sha1_hash&gt;
+- gitCode write-tree
 </pre>
 
 <h2>Requirements</h2>

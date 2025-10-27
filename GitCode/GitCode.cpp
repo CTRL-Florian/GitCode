@@ -3,6 +3,7 @@
 #include "CatFile.h"
 #include "HashObject.h"
 #include "LsTree.h"
+#include "WriteTree.h"
 
 #include <string>
 #include <vector>
@@ -27,6 +28,9 @@ int main(int argc, char *argv[])
     }
     else if (command == "ls-tree") {
         return lsTree(argc, argv) ? EXIT_SUCCESS : EXIT_FAILURE;
+    }
+    else if (command == "write-tree") {
+		return writeTree(argc, argv) ? EXIT_SUCCESS : EXIT_FAILURE;
     }
     else {
         std::cerr << "Not a vallid command..." << std::endl;
