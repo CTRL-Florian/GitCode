@@ -28,24 +28,24 @@ Blob::Blob(std::filesystem::path path)
 	mCompressed = "";
 }
 
-Tree::Tree(std::filesystem::path path, std::vector<std::unique_ptr<Object>> objects)
+Tree::Tree(std::filesystem::path path, std::vector<std::unique_ptr<Object>>&& objects) :
+	mObjects(std::move(objects))
 {
-	mPath = path;
-	mObjects = objects;
+	mPath = std::move(path);
 
 	mType = Object::Type::tree;
 
-	for (const std::unique_ptr<Object>& ob : objects) {
+	for (const std::unique_ptr<Object>& ob : mObjects) {
 		mContent += ob->getMode();
 		mContent += ' ';
 		mContent += ob->getName();
 		mContent += '\0';
-		mContent += ob->getBinhash();
+		mContent.append(ob->getBinHash().data(), ob->getBinHash().size());
 	}
 
 	mSize = mContent.size();
 
-	mCompleteObject += "blob";
+	mCompleteObject += "tree";
 	mCompleteObject += ' ';
 	mCompleteObject += std::to_string(mSize);
 	mCompleteObject += '\0';
@@ -68,7 +68,7 @@ bool Object::binHash()
 	return true;
 }
 
-std::string Object::getBinhash()
+std::string Object::getBinHash()
 {
 	if (mBinHash.empty()) binHash();
 	return mBinHash;
@@ -108,7 +108,7 @@ bool Object::compress()
 	zs.next_in = reinterpret_cast<Bytef*>(mCompleteObject.data());
 	zs.avail_in = mCompleteObject.size();
 
-	char outBuffer[4096];
+	char outBuffer[8192]; // 8kb
 
 	int ret;
 	do {
@@ -164,9 +164,12 @@ bool Blob::mode()
 	if (std::filesystem::is_symlink(mPath)) {
 		mMode = "120000";
 	}
+	// #TODO: When is a file executable?
+	/*
 	else if (isExe(mPath)) {
 		mMode = "100755";
 	}
+	*/
 	else {
 		mMode = "100644";
 	}
@@ -176,7 +179,7 @@ bool Blob::mode()
 bool Tree::mode()
 {
 	mMode = "40000";
-	return false;
+	return true;
 }
 
 std::string Object::getMode()
@@ -216,8 +219,12 @@ bool readObjectContent(std::filesystem::path& path, std::string& out)
 
 bool isExe(std::filesystem::path path)
 {
-	std::filesystem::perms perms = std::filesystem::status(path).permissions();
-	return (perms & std::filesystem::perms::owner_exec) != std::filesystem::perms::none ||
-		(perms & std::filesystem::perms::group_exec) != std::filesystem::perms::none ||
-		(perms & std::filesystem::perms::others_exec) != std::filesystem::perms::none;
+	std::error_code ec;
+	auto perms = std::filesystem::status(path, ec).permissions();
+	if (ec) return false; // fallback bij error
+
+	using fs = std::filesystem::perms;
+	return ((perms & fs::owner_exec) == fs::owner_exec) ||
+		((perms & fs::group_exec) == fs::group_exec) ||
+		((perms & fs::others_exec) == fs::others_exec);
 }

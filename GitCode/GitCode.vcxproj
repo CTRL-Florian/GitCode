@@ -131,27 +131,22 @@
   <ItemGroup>
     <ClCompile Include="CatFile.cpp" />
     <ClCompile Include="File.cpp" />
-    <ClCompile Include="FileFunctions.cpp" />
     <ClCompile Include="GitCode.cpp" />
-    <ClCompile Include="Hash.cpp" />
     <ClCompile Include="HashObject.cpp" />
     <ClCompile Include="Init.cpp" />
     <ClCompile Include="LsTree.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="WriteTree.cpp" />
-    <ClCompile Include="zlibFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CatFile.h" />
     <ClInclude Include="File.h" />
-    <ClInclude Include="FileFunctions.h" />
-    <ClInclude Include="Hash.h" />
+    <ClInclude Include="GitCode.h" />
     <ClInclude Include="HashObject.h" />
     <ClInclude Include="Init.h" />
     <ClInclude Include="LsTree.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="WriteTree.h" />
-    <ClInclude Include="zlibFunctions.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="libraries.txt" />

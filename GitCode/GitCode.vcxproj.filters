@@ -30,19 +30,10 @@
     <ClCompile Include="HashObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zlibFunctions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LsTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hash.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WriteTree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FileFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="File.cpp">
@@ -62,22 +53,16 @@
     <ClInclude Include="HashObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="zlibFunctions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LsTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Hash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WriteTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FileFunctions.h">
+    <ClInclude Include="File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="File.h">
+    <ClInclude Include="GitCode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

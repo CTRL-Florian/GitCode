@@ -20,7 +20,7 @@ public:
 	std::string getCompleteObject() const { return mCompleteObject; }
 
 	bool binHash();
-	std::string getBinhash();
+	std::string getBinHash();
 
 	bool hexHash();
 	std::string getHexHash();
@@ -65,7 +65,7 @@ private:
 class Tree : public Object
 {
 public:
-	Tree(std::filesystem::path path, std::vector<std::unique_ptr<Object>> objects);
+	Tree(std::filesystem::path path, std::vector<std::unique_ptr<Object>>&& objects);
 
 private:
 	bool mode();

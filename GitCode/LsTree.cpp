@@ -41,12 +41,12 @@ bool lsTree(int argc, char* argv[])
 
 		std::string mode = content.substr(pos, spacePos - pos);
 		
-		size_t nullPos = content.find('\0', pos);
+		size_t nullPos = content.find('\0', spacePos + 1);
 		if (nullPos == std::string::npos) break;
 
 		std::string name = content.substr(spacePos + 1, nullPos - (spacePos + 1));
 
-		if (nullPos + 20 > content.size()) break;
+		if (nullPos + 21 > content.size()) break;
 		std::string binHash = content.substr(nullPos + 1, 20);
 
 		std::stringstream ss;

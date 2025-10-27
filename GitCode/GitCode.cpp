@@ -1,13 +1,4 @@
-#include "hash.h"
-#include "Init.h"
-#include "CatFile.h"
-#include "HashObject.h"
-#include "LsTree.h"
-#include "WriteTree.h"
-
-#include <string>
-#include <vector>
-#include <iostream>
+#include "GitCode.h"
 
 int main(int argc, char *argv[])
 {

@@ -27,7 +27,7 @@ bool File::decompress()
 	zs.next_in = reinterpret_cast<Bytef*>(mCompressed.data());
 	zs.avail_in = mCompressed.size();
 
-	char outBuffer[4096]; // 4kb;
+	char outBuffer[8192]; // 8kb;
 
 	int ret;
 	do {
@@ -65,6 +65,8 @@ bool File::splitType()
 	int posSpace = mDecompressed.find(' ');
 
 	mType = std::string(mDecompressed.data(), posSpace);
+
+	return true;
 }
 
 std::string File::getType()
@@ -100,6 +102,8 @@ bool File::splitContent()
 	int posNull = mDecompressed.find('\0');
 
 	mContent = std::string(mDecompressed.data() + posNull + 1, mDecompressed.size() - (posNull + 1));
+
+	return true;
 }
 
 std::string File::getContent()
@@ -122,5 +126,5 @@ bool readFileContent(std::filesystem::path& path, std::string& out)
 
 	out = compressed;
 
-	return false;
+	return true;
 }
