@@ -19,13 +19,9 @@ public:
 	size_t getSize() const { return mSize; }
 	std::string getCompleteObject() const { return mCompleteObject; }
 
-	bool binHash();
 	std::string getBinhash();
-
-	bool hexHash();
 	std::string getHexHash();
 
-	bool compress();
 	std::string getCompressed();
 
 	bool write();
@@ -36,8 +32,12 @@ private:
 	size_t mSize;
 	std::string mCompleteObject;
 
+	bool binHash();
 	std::string mBinHash;
+
+	bool hexHash();
 	std::string mHexHash;
 
+	bool compress();
 	std::string mCompressed;
 };

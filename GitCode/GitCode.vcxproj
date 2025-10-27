@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CatFile.cpp" />
+    <ClCompile Include="File.cpp" />
     <ClCompile Include="FileFunctions.cpp" />
     <ClCompile Include="GitCode.cpp" />
     <ClCompile Include="Hash.cpp" />
@@ -142,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CatFile.h" />
+    <ClInclude Include="File.h" />
     <ClInclude Include="FileFunctions.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="HashObject.h" />

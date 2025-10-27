@@ -44,7 +44,7 @@ bool Object::hexHash()
 	ss << std::hex << std::setfill('0');
 
 	for (unsigned char c : digest) {
-		ss << std::setw(2) << static_cast<int>(c);
+		ss << std::setw(2) << static_cast<int>(c & 0xff);	// Change?
 	}
 
 	mHexHash = ss.str();
@@ -102,6 +102,8 @@ std::string Object::getCompressed()
 
 bool Object::write()
 {
+	if (mCompressed.empty()) compress();
+
 	std::string filepath = ".gitCode/objects/" + mHexHash.substr(0, 2);
 	std::filesystem::create_directories(filepath);
 	filepath += '/' + mHexHash.substr(2);

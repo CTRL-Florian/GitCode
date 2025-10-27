@@ -44,52 +44,23 @@ bool catFile(int argc, char* argv[])
 		return false;
 	}
 
-	std::filesystem::path filename = std::filesystem::path(".git/objects") / firstTwoOfHash(hash) / otherOfHash(hash);
-	std::ifstream file(filename, std::ios::binary);
+	File file(hash);
 
-	if (!file.is_open()) {
-		if (catExist) {
-			std::cerr << "Not a valid object name: " << hash << "\n";
-		}
-		else {
-			std::cerr << "Couldn't open file.\n";
-		}
-		return false;
-	}
-	else if (catExist) {
-		return true;
-	}
-
-	std::string compressed((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-
-	file.close();
-
-	std::string decompressed;
-	if (!decompress(compressed, decompressed)) {
-		std::cerr << "zlib decompression failed";
-		return false;
-	}
-
-	int posSpace = decompressed.find(' ');
-	int posNull = decompressed.find('\0');
+	if (catExist) return file.exists();
 
 	if (catType) {
-		std::cout.write(decompressed.data(), posSpace);
+		std::cout << file.getType() << std::endl;
 		std::cout << std::flush;
 	}
 
 	if (catSize) {
-		std::cout.write(decompressed.data() + posSpace + 1, posNull - (posSpace + 1));
+		std::cout << file.getSize() << std::endl;
 		std::cout << std::flush;
 	}
 
 	if (catPrint) {
-		std::cout.write(decompressed.data() + posNull + 1, decompressed.size() - (posNull + 1));
+		std::cout << file.getContent() << std::endl;
 		std::cout << std::flush;
-	}
-
-	if (catType || catSize || catPrint) {
-		std::cout << std::endl;
 	}
 
 	return true;
