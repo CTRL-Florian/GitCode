@@ -41,7 +41,7 @@ bool hashObject(int argc, char* argv[])
 
 	file.close();
 
-	std::string hash = getHashOfObjectLong(completeObject);
+	std::string hash = getSha1Hex(completeObject);
 
 	std::cout << hash << std::endl;
 
@@ -50,23 +50,9 @@ bool hashObject(int argc, char* argv[])
 	}
 
 	std::string compressed;
-	if (!compress(completeObject, compressed)) {
-		std::cerr << "zlib compression failed";
-		return false;
-	}
+	compress(completeObject, compressed);
 
-	std::string hashString = hash;
-	std::string filepath = ".gitCode/objects/" + firstTwoOfHash(hashString);
-	std::filesystem::create_directories(filepath);
-	filepath += '/' + otherOfHash(hashString);
-
-	std::ofstream hashFile(filepath, std::ios::binary);
-	if (!hashFile.is_open()) {
-		std::cerr << "Couldn't open file.\n";
-		return false;
-	}
-
-	hashFile.write(compressed.data(), compressed.size());
+	writeObjectFileBinary(hash, compressed);
 	
 	return true;
 }

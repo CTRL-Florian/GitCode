@@ -1,5 +1,13 @@
 #include "WriteTree.h"
 
+bool isExe(std::filesystem::path path)
+{
+	std::filesystem::perms perms = std::filesystem::status(path).permissions();
+	return (perms & std::filesystem::perms::owner_exec) != std::filesystem::perms::none ||
+		(perms & std::filesystem::perms::group_exec) != std::filesystem::perms::none ||
+		(perms & std::filesystem::perms::others_exec) != std::filesystem::perms::none;
+}
+
 bool writeTree(int argc, char* argv[])
 {
 	if (argc != 3) {
@@ -18,14 +26,67 @@ bool writeTree(int argc, char* argv[])
 		objects.push_back(object.path());
 	}
 
-	std::string treeFile = "tree ";
-
-	if (objects.empty()) {
-		treeFile += "\0";
-		return false;
-	}
+	std::string treeHeader = "tree ";
+	std::string treeContent;
 
 	std::sort(objects.begin(), objects.end());
 
-	return false;
+	for (std::filesystem::path objectP : objects) {
+		std::string mode;
+		std::string name;
+		std::string hash;
+
+		std::filesystem::file_status s = std::filesystem::status(objectP);
+
+		if (std::filesystem::is_symlink(s)) {
+			mode = "120000";
+			name = objectP.filename().string();
+			std::filesystem::path symlinkContent = std::filesystem::read_symlink(objectP);
+			std::string objectContent = "blob " + symlinkContent.string().size() + '\0' + symlinkContent.string();
+			hash = getSha1Binary(objectContent);
+
+			treeContent += mode + ' ' + name + '\0' + hash;
+
+			std::string completeObject = "blob " + std::to_string(objectContent.size()) + '\0' + objectContent;
+			std::string compressed;
+			compress(completeObject, compressed);
+
+			std::string hashHex = getSha1Hex(objectContent);
+
+			writeObjectFileBinary(hashHex, compressed);
+		}
+		else if (!std::filesystem::is_directory(s)) {
+			if (isExe(objectP)) {
+				mode = "100755";
+			}
+			else {
+				mode = "100644";
+			}
+
+			name = objectP.filename().string();
+			std::string objectContent;
+			readFile(objectP, objectContent);
+			hash = getSha1Binary(objectContent);
+
+			treeContent += mode + ' ' + name + '\0' + hash;
+
+			std::string completeObject = "blob " + std::to_string(objectContent.size()) + '\0' + objectContent;
+			std::string compressed;
+			compress(completeObject, compressed);
+
+			std::string hashHex = getSha1Hex(objectContent);
+
+			writeObjectFileBinary(hashHex, compressed);
+		}
+		else {
+			mode = "40000";	// Dir
+		}
+	}
+
+	std::string treeObject = treeHeader + std::to_string(treeContent.size()) + '\0' + treeContent;
+	std::string treehash = getSha1Hex(treeObject);
+
+	std::cout << treehash << std::endl;
+
+	return true;
 }

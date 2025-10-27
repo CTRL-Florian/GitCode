@@ -132,6 +132,7 @@
     <ClCompile Include="Author.cpp" />
     <ClCompile Include="CatFile.cpp" />
     <ClCompile Include="Commit.cpp" />
+    <ClCompile Include="FileFunctions.cpp" />
     <ClCompile Include="GitCode.cpp" />
     <ClCompile Include="Hash.cpp" />
     <ClCompile Include="HashObject.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Author.h" />
     <ClInclude Include="CatFile.h" />
     <ClInclude Include="Commit.h" />
+    <ClInclude Include="FileFunctions.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="HashObject.h" />
     <ClInclude Include="Init.h" />

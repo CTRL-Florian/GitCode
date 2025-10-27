@@ -2,6 +2,7 @@
 
 #include "hash.h"
 #include "zlibFunctions.h"
+#include "FileFunctions.h"
 
 #include <string>
 #include <fstream>
