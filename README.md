@@ -7,7 +7,9 @@
 
 <br>
 <h2>Graph</h2>
-<embed src="GitCodeGraph.pdf" type="application/pdf" width="600" height="800">
+<div style="text-align: center;">
+  <img src="GitCodeGraph.png" alt="Logo" />
+</div>
 
 <br>
 <h2>Commands:</h2>
