@@ -1,15 +1,15 @@
 <h1>GitCode: A Git Copy</h1>
 
 <br>
-<div style="text-align: center;">
+<p align="center">
   <img src="gitCode.png" alt="Logo" />
-</div>
+</p>
 
 <br>
 <h2>Graph</h2>
-<div style="text-align: center;">
-  <img src="GitCodeGraph.png" alt="Logo" />
-</div>
+<p align="center">
+  <img src="GitCodeGraph.png" alt="Graph" />
+</p>
 
 <br>
 <h2>Commands:</h2>
